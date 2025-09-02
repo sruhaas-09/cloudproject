@@ -25,14 +25,16 @@ app.get('/', (req, res) => {
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
-  port: 4000,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-   ssl: {
-    ca: fs.readFileSync(process.env.DB_SSL_CA)
-  }
+  ssl: {
+  ca: process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")
+    ? process.env.DB_SSL_CA
+    : fs.readFileSync(process.env.DB_SSL_CA, "utf8")
+}
 });
+
 // console.log("Using SSL CA:", process.env.DB_SSL_CA);
 
 const secret_key = process.env.SECRET_KEY || 'fallback_secret';
@@ -97,7 +99,7 @@ app.post('/login', (req, res) => {
     const token = jwt.sign({ id: user.id, email: user.email }, secret_key, { expiresIn: '2h' });
     res.cookie('auth_token', token, {
       httpOnly: true,
-      secure: false,  
+      secure: process.env.NODE_ENV === "production",  
       sameSite: 'lax',
       maxAge: 2 * 60 * 60 * 1000
     });
