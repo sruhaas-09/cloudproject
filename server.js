@@ -29,8 +29,8 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  ssl: {
-    ca: fs.readFileSync(process.env.DB_SSL_CA,"utf8")
+   ssl: {
+    ca: fs.readFileSync(process.env.DB_SSL_CA)
   }
 });
 // console.log("Using SSL CA:", process.env.DB_SSL_CA);
