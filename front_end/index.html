@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>landingpage</title>
+    <style>
+        body{
+          height: 100vh;
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0%;
+          margin: 0%;
+        }
+        #display1{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60vw;
+        }
+        #display2{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 2vh;
+            width: 40vw;
+            background-color: #2196F3;
+        }
+        .button{
+            height: 6vh;
+            width: 24vw;
+            border-radius: 1.5vh;
+            font-size: medium;
+            font-weight: bold;
+            border: none;
+            transition: transform(0.3) ease;
+        }
+        img{
+            width: 70vh;
+            height: auto;
+        }
+        .button:hover{
+            transform: scaleX(1.1);
+            background-color: #e3f2fd;
+        }
+        h1:hover{
+             transform: scaleX(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="display1">
+        <img src="landingpage.jpg" alt="">
+    </div>
+    <div id="display2">
+        <h1 style="color: white; margin-bottom: 2vh;">Welcome to Cloud ☁️</h1>
+        <button class="button" onclick="location.href='loginpage.html'">Login</button>
+        <button class="button" onclick="location.href='signuppage.html'">SignUp</button>
+    </div>
+</body>
+</html>

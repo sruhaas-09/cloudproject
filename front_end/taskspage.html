@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Calendar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+    }
+
+    nav {
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 1rem;
+    }
+
+    .nav-content {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: pointer;
+    }
+
+    .nav-title {
+      margin-left: 6vh;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #0072ff;
+    }
+
+    .nav-right {
+      width: 40px;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100% - 60px);
+      padding: 10px;
+      gap: 15px;
+      width: 100vw;
+    }
+
+    .calendar, .task-input, .saved-tasks {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .calendar {
+      flex: 1;
+      overflow-y: auto;
+      justify-content: space-between;
+    }
+
+    .task-input {
+      flex: 2;
+    }
+
+    .saved-tasks {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    #calendar-dates {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .date-cell {
+      padding: 10px;
+      background: #e6f0ff;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .date-cell:hover {
+      background: #cce0ff;
+    }
+
+    .selected {
+      background: #0072ff !important;
+      color: white;
+      font-weight: bold;
+    }
+
+    #task-text {
+      width: 100%;
+      height: 90%;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin: 15px 0;
+      font-size: 1rem;
+      resize: none;
+    }
+
+    #save-btn {
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 30%;
+      font-size: 1rem;
+    }
+
+    #save-btn:hover {
+      background: #218838;
+    }
+
+    .task-item {
+      background: #f7f7f7;
+      padding: 10px;
+      margin: 5px 0;
+      border-left: 5px solid #0072ff;
+      border-radius: 4px;
+    }
+
+    .back-btn {
+      margin-top: 20px;
+      padding: 10px;
+      color: black;
+      background-color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      align-self: flex-start;
+    }
+
+    .back-btn:hover {
+      background-color: #a5afba;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+    }
+    #button_list{
+        display: flex;
+        justify-content: space-between;
+    }
+    #delete_btn{
+      padding: 12px;
+      background:red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 30%;
+      font-size: 1rem;
+
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-content">
+      <div id="logo">CloudStorage☁️</div>
+      <div class="nav-title">📅 My Task Calendar</div>
+      <div class="nav-right"></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="calendar">
+      <div>
+        <h3 id="month-year"></h3>
+        <div id="calendar-dates"></div>
+      </div>
+      <button class="back-btn" onclick="location.href='mainpage.html'">←Back</button>
+    </div>
+
+    <div class="task-input">
+      <h3 id="selected-date">Select a Date</h3>
+      <textarea id="task-text" placeholder="Write your task here..."></textarea>
+      <div id="button_list">
+      <button id="save-btn">Save Task</button>
+      <button id="delete_btn">Delete</button>
+      </div>
+    </div>
+
+    <div class="saved-tasks">
+      <h3>Saved Tasks</h3>
+      <div id="tasks-list"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const calendarDates = document.getElementById('calendar-dates');
+      const monthYearEl = document.getElementById('month-year');
+      const selectedDateEl = document.getElementById('selected-date');
+      const taskText = document.getElementById('task-text');
+      const saveBtn = document.getElementById('save-btn');
+      const tasksList = document.getElementById('tasks-list');
+      let selectedDate = null;
+      const tasks = {};
+      let selectedCell = null;
+
+      function generateCalendar() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+        monthYearEl.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
+        calendarDates.innerHTML = '';
+
+        for (let i = 0; i < firstDay; i++) {
+          const empty = document.createElement('div');
+          calendarDates.appendChild(empty);
+        }
+
+        for (let i = 1; i <= daysInMonth; i++) {
+          const dateCell = document.createElement('div');
+          dateCell.className = 'date-cell';
+          dateCell.textContent = i;
+          const fullDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+          dateCell.addEventListener('click', () => {
+            selectedDate = fullDate;
+            selectedDateEl.textContent = `Tasks for ${today.toLocaleString('default', { month: 'long' })} ${i}, ${year}`;
+            if (selectedCell) selectedCell.classList.remove('selected');
+            dateCell.classList.add('selected');
+            selectedCell = dateCell;
+            taskText.value = '';
+            displayTasks();
+          });
+          calendarDates.appendChild(dateCell);
+        }
+      }
+
+      function displayTasks() {
+        tasksList.innerHTML = '';
+        if (selectedDate && tasks[selectedDate]) {
+          tasks[selectedDate].forEach(task => {
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item';
+            taskItem.textContent = task;
+            tasksList.appendChild(taskItem);
+          });
+        }
+      }
+
+      saveBtn.addEventListener('click', () => {
+        if (!selectedDate) {
+          alert('Please select a date first!');
+          return;
+        }
+        if (!taskText.value.trim()) {
+          alert('Task cannot be empty!');
+          return;
+        }
+        if (!tasks[selectedDate]) tasks[selectedDate] = [];
+        tasks[selectedDate].push(taskText.value.trim());
+        taskText.value = '';
+        displayTasks();
+      });
+
+      generateCalendar();
+    });
+  </script>
+</body>
+</html>

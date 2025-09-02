@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SignupPage</title>
+  <script src="signuppage.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+     background: linear-gradient(to right, #d9f0ff, #f0f8ff);
+
+
+    }
+    #box1 {
+      height: 90vh;
+      width: 90vw;
+      border: none;
+      background-color: white;
+      border-radius: 10px;
+      z-index: 1;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      display: flex;
+    }
+    #arrange1 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40vw;
+    }
+    img {
+      width: 40vw;
+    }
+    #arrange2 {
+      width: 50vw;
+      border-bottom-right-radius: 10px;
+      border-top-right-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #d6e6f7;
+
+    }
+    #arrange2 input {
+      border: 1px solid #ccc;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      width: 60%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+    #getotp {
+      align-self: flex-start;
+      margin-left: 19%;
+      margin-top: 0.75vh;
+      font-size: 1.2rem;
+      color: #0077cc;
+    }
+    #getotp a {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    #SignUp {
+      width: 10vw;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 2vh;
+      border: none;
+      font-size: small;
+      font-weight: bold;
+      background-color: #0077cc;
+    }
+    #SignUp:hover {
+      background-color: #0056b3;
+      transform: scale(1.02);
+      transition: 0.2s ease-in-out;
+    }
+    #button {
+      margin-top: 3vh;
+    }
+    h2 {
+      margin-top: -10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="box1">
+    <div id="arrange1">
+      <img src="landingpage.jpg" alt="">
+    </div>
+    <form id="arrange2" action="http://localhost:3000/signup" method="POST">
+      <h1>Welcome to Cloud ☁️</h1>
+      <h2>Sign Up</h2>
+      <input type="email" name="email"  id="email" placeholder="Email" required />
+      <input type="text"   name="user_name" id="username" placeholder="Username" required />
+      <input type="tel"  name="phone_number" id="phone" placeholder="Phone Number" required />
+      <input type="password"  name="password_entery" id="password" placeholder="Password" required />
+      <input type="password" name="password_confrim" id="confirmPassword" placeholder="Confirm Password" required />
+      <div id="button">
+        <button id="SignUp" type="submit">SignUp</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
