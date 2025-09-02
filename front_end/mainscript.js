@@ -11,7 +11,7 @@ async function handleFile(event) {
   formData.append("file", file);
 
   try {
-    const res = await fetch("http://localhost:3000/upload", {
+    const res = await fetch("/upload", {
       method: "POST",
       body: formData,
       credentials: 'include' 
@@ -47,7 +47,7 @@ let filteredFiles = [];
 
 async function loadFiles() {
   try {
-    const res = await fetch("http://localhost:3000/files");
+    const res = await fetch("/files");
     if (!res.ok) {
       console.error("Error fetching files", await res.text());
       return;
@@ -141,7 +141,7 @@ function renderFiles(files = filteredFiles) {
       downloadBtn.className = "btn btn-primary btn-sm mt-auto";
       downloadBtn.innerHTML = `<i class="bi bi-download"></i> Download`;
       downloadBtn.onclick = async () => {
-        const res = await fetch(`http://localhost:3000/uploads/${file.filename}`);
+        const res = await fetch(`/uploads/${file.filename}`);
         const blob = await res.blob();
         console.log(blob);
         const link = document.createElement("a");
@@ -238,7 +238,7 @@ function openFileViewer(file) {
 
   viewerContent.appendChild(closeBtn);
 
-  const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
+  const fileUrl = `/uploads/${file.filename}`;
 
   if (file.mimetype.startsWith("image/")) {
     const img = document.createElement("img");

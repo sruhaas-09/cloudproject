@@ -12,7 +12,7 @@ const fs = require('fs');
 
 app.use(cookieparser());
 app.use(cors({
-  origin: "https://cloudproject-1-b3rp.onrender.com",
+  origin: true,
   credentials: true
 }));
 
