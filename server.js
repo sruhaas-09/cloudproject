@@ -11,7 +11,11 @@ const cookieparser = require('cookie-parser');
 const fs = require('fs');   
 
 app.use(cookieparser());
-app.use(cors());
+app.use(cors({
+  origin: "https://cloudproject-1-b3rp.onrender.com",
+  credentials: true
+}));
+
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.use(express.static(__dirname + '/front_end'));
