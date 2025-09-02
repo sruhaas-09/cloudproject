@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { createPool } = require('mysql');
+const mysql = require('mysql2');
 const bodyparser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
@@ -17,25 +17,35 @@ app.use(bodyparser.json());
 app.use(express.static(__dirname + '/front_end'));
 require('dotenv').config();
 
+app.use(express.static(path.join(__dirname, 'uploads')));
 
-app.use(express.static(__dirname+'uploads')); 
 app.get('/', (req, res) => {
   res.redirect('/index.html');
 });
 
-const pool = createPool({
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: 4000,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  ssl: {
+    ca: fs.readFileSync(process.env.DB_SSL_CA,"utf8")
+  }
 });
+// console.log("Using SSL CA:", process.env.DB_SSL_CA);
 
 const secret_key = process.env.SECRET_KEY || 'fallback_secret';
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads'),
-  filename: (req, file, cb) => cb(null,file.originalname)
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, process.env.UPLOAD_PATH));
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
 });
+
 const upload = multer({ storage });
 
 function authenticatetoken(req, res, next) {
@@ -66,7 +76,7 @@ app.post('/signup', async (req, res) => {
           console.error('insert error:', err);
           return res.status(500).send('please verify your credentials');
         }
-        res.status(201).redirect('/mainpage.html');
+        res.status(201).redirect('/loginpage.html');
       }
     );
   } catch (error) {

@@ -384,19 +384,20 @@
 
         #closeBtn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: red;
-            color: white;
+            top: 0px;
+            right: 0px;
+            background: white;
+            color: rgb(94, 92, 92);
             border: none;
             font-size: 20px;
             padding: 8px 12px;
             cursor: pointer;
-            border-radius: 50%;
             z-index: 10000;
         }
+        #closeBtn:hover{
+            background-color: #bdb7b7;
+        }
 
-        /* Image & PDF iframe styling */
         #viewerContent img,
         #viewerContent iframe {
             width: 100%;
@@ -454,16 +455,11 @@
 
             <div id="viewerContent"
                 style="position:relative; background:white; padding:20px; border-radius:8px; display:flex; flex-direction:column;">
-
-                <button type="button" class="btn btn-light position-absolute top-0 end-0 m-2" onclick="closeViewer()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-
                 <div id="fileContent"></div>
+                   
+                </button>
             </div>
         </div>
-
-
         <div id="last">
             <div class="share_button">
                 <button onclick="toggleShareOptions()" class="share-button">

@@ -14,6 +14,7 @@ async function handleFile(event) {
     const res = await fetch("http://localhost:3000/upload", {
       method: "POST",
       body: formData,
+      credentials: 'include' 
     });
 
     const text = await res.text();
@@ -78,7 +79,7 @@ function renderFiles(files = filteredFiles) {
     const row = document.createElement("div");
     // row.style.gap = "20px"; 
     // row.style.marginTop = "1px"; 
-    row.className = "row g-4"; s
+    row.className = "row g-4"; 
 
     
 
@@ -142,6 +143,7 @@ function renderFiles(files = filteredFiles) {
       downloadBtn.onclick = async () => {
         const res = await fetch(`http://localhost:3000/uploads/${file.filename}`);
         const blob = await res.blob();
+        console.log(blob);
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = file.filename;
@@ -225,9 +227,16 @@ function openFileViewer(file) {
   const fileViewer = document.getElementById("fileViewer");
   const viewerContent = document.getElementById("viewerContent");
 
-  Array.from(viewerContent.children).forEach(child => {
-    if (child.id !== "closeBtn") child.remove();
-  });
+  viewerContent.innerHTML = "";
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.id = "closeBtn";
+  closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+  closeBtn.setAttribute("aria-label", "Close");
+
+  closeBtn.onclick = () => closeViewer();
+
+  viewerContent.appendChild(closeBtn);
 
   const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
 
@@ -259,7 +268,8 @@ function openFileViewer(file) {
     viewerContent.appendChild(audio);
   } else {
     const msg = document.createElement("div");
-    msg.innerHTML = "Preview not available, please download and view. <br><small>(Sorry for inconvenience)</small>";
+    msg.innerHTML =
+      "Preview not available, please download and view. <br><small>(Sorry for inconvenience)</small>";
     msg.style.textAlign = "center";
     msg.style.padding = "20px";
     viewerContent.appendChild(msg);
@@ -267,6 +277,7 @@ function openFileViewer(file) {
 
   fileViewer.style.display = "flex";
 }
+
 
 function closeViewer() {
   document.getElementById("fileViewer").style.display = "none";
