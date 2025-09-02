@@ -17,7 +17,15 @@ app.use(bodyparser.json());
 app.use(express.static(__dirname + '/front_end'));
 require('dotenv').config();
 
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static("uploads", {
+  setHeaders: (res, path) => {
+    if (path.endsWith(".pdf")) {
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", "inline"); 
+    }
+  }
+}));
+
 
 app.get('/', (req, res) => {
   res.redirect('/index.html');
