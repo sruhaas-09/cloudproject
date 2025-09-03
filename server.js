@@ -47,11 +47,15 @@ if (process.env.DB_SSL_CA) {
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT) || 4000,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  ssl: process.env.DB_ENABLE_SSL === 'true' ? {} : undefined,  // Enable SSL
+  port: process.env.DB_PORT,
+  ssl: {
+    ca: process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")
+      ? process.env.DB_SSL_CA
+      : fs.readFileSync(process.env.DB_SSL_CA, "utf8")
+  }
 });
 
 
