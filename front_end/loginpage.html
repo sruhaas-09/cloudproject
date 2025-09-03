@@ -168,14 +168,12 @@
     }
   </style>
   <script>
-    fetch('http://localhost:3000/login', { /* login details*/ })
+    fetch(`${window.location.origin}/login`)
   .then(res => res.json())
   .then(data => {
-    localStorage.setItem('token', data.token); // Store JWT token
-    window.location.href = 'mainpage.html';    // Redirect to main page
+    localStorage.setItem('token', data.token); 
+    window.location.href = 'mainpage.html';   
   });
-
-// When uploading
 const token = localStorage.getItem('token');
   </script>
 </head>
@@ -187,7 +185,7 @@ const token = localStorage.getItem('token');
     <div id="arrange2">
       <h1>Welcome to Cloud ☁️</h1>
       <h2 id="h">Login</h2>
-      <form id="loginForm"  action="http://localhost:3000/login" method="post">
+      <form id="loginForm"  action="`${window.location.origin}/login`" method="post">
         <input type="email" name="email" placeholder="Enter your Email" name="email" id="email" required />
         <input type="password" name="password_entery" placeholder="Password" id="password" required />
         <div id="check">
