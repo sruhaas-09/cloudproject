@@ -46,12 +46,12 @@ if (process.env.DB_SSL_CA) {
 }
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  port: process.env.DB_PORT,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  ssl: sslConfig
+  host: process.env.TIDB_HOST,
+  user: process.env.TIDB_USER,
+  port: process.env.TIDB_PORT,
+  password: process.env.TIDB_PASSWORD,
+  database: process.env.TIDB_DATABASE,
+  ssl: process.env.TIDB_ENABLE_SSL === "true" ? {} : null,
 });
 
 
