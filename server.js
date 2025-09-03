@@ -35,28 +35,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'front_end', 'index.html'));
 });
 
-let sslConfig = undefined;
-
-if (process.env.DB_SSL_CA) {
-  if (process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")) {
-    sslConfig = { ca: process.env.DB_SSL_CA };
-  } else {
-    sslConfig = { ca: fs.readFileSync(process.env.DB_SSL_CA, "utf8") };
-  }
-}
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  port: process.env.DB_PORT || 4000,
   ssl: {
-    ca: process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")
-      ? process.env.DB_SSL_CA
-      : fs.readFileSync(process.env.DB_SSL_CA, "utf8")
+    ca: fs.readFileSync(path.join(__dirname, "certs", "isrgrootx1.pem"))
   }
 });
+
 
 
 
