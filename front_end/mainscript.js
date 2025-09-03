@@ -11,7 +11,7 @@ async function handleFile(event) {
   formData.append("file", file);
 
   try {
-    const res = await fetch("/upload", {
+    const res = await fetch(`${window.location.origin}/upload`, {
       method: "POST",
       body: formData,
       credentials: 'include' 
@@ -47,7 +47,7 @@ let filteredFiles = [];
 
 async function loadFiles() {
   try {
-    const res = await fetch("/files");
+    const res = await fetch(`${window.location.origin}/files`);
     if (!res.ok) {
       console.error("Error fetching files", await res.text());
       return;
@@ -141,7 +141,7 @@ function renderFiles(files = filteredFiles) {
       downloadBtn.className = "btn btn-primary btn-sm mt-auto";
       downloadBtn.innerHTML = `<i class="bi bi-download"></i> Download`;
       downloadBtn.onclick = async () => {
-        const res = await fetch(`/uploads/${file.filename}`);
+        const res = await fetch(`${window.location.origin}/uploads/${file.filename}`);
         const blob = await res.blob();
         console.log(blob);
         const link = document.createElement("a");
@@ -231,14 +231,15 @@ function openFileViewer(file) {
   const closeBtn = document.createElement("button");
   closeBtn.type = "button";
   closeBtn.id = "closeBtn";
-  closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+  closeBtn.innerHTML = `<i class="bi bi-x-lg"></i>`;
+  // closeBtn.className = "btn-close"; 
   closeBtn.setAttribute("aria-label", "Close");
 
   closeBtn.onclick = () => closeViewer();
 
   viewerContent.appendChild(closeBtn);
 
-  const fileUrl = `/uploads/${file.filename}`;
+  const fileUrl = `${window.location.origin}/uploads/${file.filename}`;
 
   if (file.mimetype.startsWith("image/")) {
     const img = document.createElement("img");
@@ -269,7 +270,7 @@ function openFileViewer(file) {
   } else {
     const msg = document.createElement("div");
     msg.innerHTML =
-      "Preview not available, please download and view. <br><small>(Sorry for inconvenience)</small>";
+      "Preview not available, please download and view. <br><small>(Sorry for inconvenience still in devloping)</small>";
     msg.style.textAlign = "center";
     msg.style.padding = "20px";
     viewerContent.appendChild(msg);

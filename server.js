@@ -18,7 +18,6 @@ app.use(cors({
 
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
-app.use(express.static(__dirname + '/front_end'));
 require('dotenv').config();
 
 app.use("/uploads", express.static("uploads", {
@@ -30,22 +29,30 @@ app.use("/uploads", express.static("uploads", {
   }
 }));
 
+app.use(express.static(path.join(__dirname, 'front_end')));
 
 app.get('/', (req, res) => {
-  res.redirect('/index.html');
+  res.sendFile(path.join(__dirname, 'front_end', 'index.html'));
 });
+
+let sslConfig = undefined;
+
+if (process.env.DB_SSL_CA) {
+  if (process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")) {
+    sslConfig = { ca: process.env.DB_SSL_CA };
+  } else {
+    sslConfig = { ca: fs.readFileSync(process.env.DB_SSL_CA, "utf8") };
+  }
+}
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  ssl: {
-  ca: process.env.DB_SSL_CA.includes("BEGIN CERTIFICATE")
-    ? process.env.DB_SSL_CA
-    : fs.readFileSync(process.env.DB_SSL_CA, "utf8")
-}
+  ssl: sslConfig
 });
+
 
 // console.log("Using SSL CA:", process.env.DB_SSL_CA);
 
@@ -56,7 +63,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, process.env.UPLOAD_PATH));
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null,Date.now()+"-"+ file.originalname);
   }
 });
 
@@ -88,7 +95,7 @@ app.post('/signup', async (req, res) => {
       (err) => {
         if (err) {
           console.error('insert error:', err);
-          return res.status(500).send('please verify your credentials');
+          return res.status(500).send(err);
         }
         res.status(201).redirect('/loginpage.html');
       }
@@ -221,6 +228,6 @@ app.post('/forgotpassword', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`server running at http://localhost:${PORT}`);
+app.listen(PORT,'0.0.0.0', () => {
+  console.log(`server running at ${PORT}`);
 });
